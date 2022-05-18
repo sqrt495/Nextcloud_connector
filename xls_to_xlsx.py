@@ -2,13 +2,13 @@ import os
 from time import sleep
 import stat
 import win32com.client
+import win32process
+import win32gui
+import win32api
+import win32con
 #print(win32com.__gen_path__)
-def close_excel_by_force(excel):
-    import win32process
-    import win32gui
-    import win32api
-    import win32con
 
+def close_excel_by_force(excel):
     # Get the window's process id's
     hwnd = excel.Hwnd
     t, p = win32process.GetWindowThreadProcessId(hwnd)
@@ -26,15 +26,16 @@ def close_excel_by_force(excel):
         pass
 
 path = os.getcwd()
+files_in_folder = os.listdir()
 mass = []
-ffolder = os.listdir()
-for f in ffolder:
+
+for f in files_in_folder:
     file = path+"\\"+f
     if (".xlsx" not in f) and ((".xls" in f) or (".ods" in f)):
         mass.append(file)
         res = "." + f.split('.')[-1]
         filename = f.replace(res, "")
-        print(filename)
+        #print(filename)
 
         excel = win32com.client.Dispatch('Excel.Application')
         #excel = win32com.client.dynamic.Dispatch('Excel.Application')
@@ -43,7 +44,7 @@ for f in ffolder:
         wb = excel.Workbooks.Open(file)
         excel.DisplayAlerts = False
 
-        wb.SaveAs(path+"\\"+"MOD"+filename+".xlsx", FileFormat = 51)    #FileFormat = 51 is for .xlsx extension #FileFormat = 56 is for .xls extension
+        wb.SaveAs(path+"\\"+"MOD-"+filename+".xlsx", FileFormat = 51)    #FileFormat = 51 is for .xlsx extension #FileFormat = 56 is for .xls extension
         wb.Close()
         del wb
         excel.Application.Quit()
@@ -53,8 +54,10 @@ for f in ffolder:
 
 
 
-del ffolder, path
+del files_in_folder, path
 sleep(2)
 for i in mass:
     os.chmod(i, stat.S_IWRITE)
     os.remove(i)
+
+print('Completed!')
