@@ -1,6 +1,4 @@
 import os
-from time import sleep
-import stat
 import openpyxl
 from time import sleep
 
