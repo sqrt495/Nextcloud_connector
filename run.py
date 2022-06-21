@@ -7,7 +7,7 @@ import config, selenium_with_nextcloud, unzip_and_sort, secret_keys, divide_vers
 from time import sleep
 import stat
 
-
+nowtime = datetime.now()
 # tech defs:
 def nowtime_str():
     return nowtime.strftime("%d.%m.%Y-%H.%M")
@@ -31,8 +31,6 @@ config.rise_up_project_architecture(temp_dir=config.temp_dir,
 
 #  TODO: удаление отработанных файлов и очистку папок
 
-# key dates:
-nowtime = datetime.now()
 today = datetime.now().strftime('%d.%m.%Y')
 tomorrow = (datetime.now() + timedelta(days=1)).strftime('%d.%m.%Y')
 day_after_tomorrow = (datetime.now() + timedelta(days=2)).strftime('%d.%m.%Y')
@@ -59,7 +57,7 @@ selenium_with_nextcloud.download_clear_create_folder(
                              password='')
 
 saved_archive = os.listdir(config.temp_dir)[0]
-original_folder_name = os.listdir(config.temp_dir)[0].replace('.zip','')
+original_folder_name = saved_archive.replace('.zip','')
 
 shutil.copyfile(os.path.join(config.temp_dir,
                              saved_archive),
@@ -110,6 +108,7 @@ unpacked_dict, unpacked_list = unzip_and_sort.unpacked_tree(config.temp_dir)
 unzip_and_sort.rename_files_by_folder(unpacked_list)
 print('rename_files_by_folder done!!!')
 
+#  TODO: some xlsx files sorted to 'others' - check it
 unpacked_dict, unpacked_list = unzip_and_sort.unpacked_tree(config.temp_dir)
 unzip_and_sort.sort_files(original_folder_name=original_folder_name,
                           extract_dir=config.temp_dir,
@@ -219,6 +218,7 @@ if len(os.listdir(config.not_table_kjz_dir)) != 0:
             upload_not_table_kjz,
             secret_keys.nextcloud_upload_for_employee_url_pass)
     except: print('Somthing wrong in uploading KJZ pics!!!')
+
 
 # pics to Control MO
 archive_other_files_to_cloud = config.others_files_dir
